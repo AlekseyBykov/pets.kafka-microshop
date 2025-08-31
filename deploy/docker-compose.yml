@@ -1,0 +1,48 @@
+services:
+  redpanda:
+    image: redpandadata/redpanda:v24.2.5
+    command:
+      - redpanda
+      - start
+      - --overprovisioned
+      - --smp=1
+      - --memory=1024M
+      - --reserve-memory=0M
+      - --node-id=0
+      - --check=false
+      - --kafka-addr=PLAINTEXT://0.0.0.0:9092,OUTSIDE://0.0.0.0:19092
+      - --advertise-kafka-addr=PLAINTEXT://redpanda:9092,OUTSIDE://localhost:19092
+    ports:
+      - "19092:19092"
+      - "9644:9644"
+
+  console:
+    image: redpandadata/console:latest
+    depends_on:
+      - redpanda
+    environment:
+      KAFKA_BROKERS: "redpanda:9092"
+    ports:
+      - "8080:8080"
+
+  orders-service:
+    build:
+      context: ../
+      dockerfile: services/orders-service/Dockerfile
+    depends_on:
+      - redpanda
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+    ports:
+      - "8081:8081"
+
+  payments-service:
+    build:
+      context: ../
+      dockerfile: services/payments-service/Dockerfile
+    depends_on:
+      - redpanda
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+    ports:
+      - "8083:8083"

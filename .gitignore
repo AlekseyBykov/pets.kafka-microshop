@@ -1,0 +1,33 @@
+### Maven ###
+target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+.mvn/wrapper/maven-wrapper-downloader.jar
+*.log
+*.out
+
+### IntelliJ IDEA ###
+.idea/
+*.iml
+*.iws
+*.ipr
+
+### VS Code ###
+.vscode/
+
+### OS files ###
+.DS_Store
+Thumbs.db
+
+### Docker ###
+*.pid
+*.seed
+*.data
+*.db
+*.log
+**/docker-data/
+**/deploy/redpanda-data/
+
+### Other ###
+/deploy/redpanda-volume/
+/deploy/redpanda-config/

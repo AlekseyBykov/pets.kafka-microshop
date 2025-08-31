@@ -1,0 +1,17 @@
+server:
+  port: 8085
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:19092
+    consumer:
+      group-id: auditor-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+app:
+  topics:
+    dlt-orders: dlt.orders.events.v1
+    dlt-payments: dlt.payments.events.v1
+    dlt-inventory: dlt.inventory.events.v1
