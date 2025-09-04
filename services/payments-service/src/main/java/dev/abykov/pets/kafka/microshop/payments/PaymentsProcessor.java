@@ -1,5 +1,8 @@
 package dev.abykov.pets.kafka.microshop.payments;
 
+import dev.abykov.pets.kafka.microshop.messaging.events.OrderEvent;
+import dev.abykov.pets.kafka.microshop.messaging.events.PaymentEvent;
+import dev.abykov.pets.kafka.microshop.payments.PaymentTopics;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -13,32 +16,21 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class PaymentsProcessor {
 
-    private final KafkaTemplate<String, String> kafka;
+    private final KafkaTemplate<String, PaymentEvent> paymentKafkaTemplate;
     private final PaymentTopics topics;
-    private final Random random = new Random();
 
     @KafkaListener(topics = "${app.topics.orders}", groupId = "payments-service")
-    public void onOrderCreated(String message) {
-        log.info("Получен заказ для оплаты: {}", message);
+    public void onOrderCreated(OrderEvent event) {
+        log.info("Получен заказ для оплаты: {}", event);
 
-        boolean approved = random.nextBoolean();
-        String orderId = extractOrderId(message);
+        boolean approved = new Random().nextBoolean();
 
-        String event = approved
-                ? "{\"orderId\":\"" + orderId + "\",\"status\":\"AUTHORIZED\"}"
-                : "{\"orderId\":\"" + orderId + "\",\"status\":\"DECLINED\"}";
+        PaymentEvent payment = approved
+                ? new PaymentEvent(event.getOrderId(), "AUTHORIZED")
+                : new PaymentEvent(event.getOrderId(), "DECLINED");
 
-        kafka.send(topics.getPayments(), orderId, event);
+        paymentKafkaTemplate.send(topics.getPayments(), event.getOrderId(), payment);
 
-        log.info("Отправлен результат оплаты [{}]: {}", approved ? "AUTHORIZED" : "DECLINED", event);
-    }
-
-    private String extractOrderId(String message) {
-        int start = message.indexOf("\"orderId\":\"") + 11;
-        int end = message.indexOf("\"", start);
-
-        return (start > 10 && end > start)
-                ? message.substring(start, end)
-                : "UNKNOWN";
+        log.info("Отправлен результат оплаты [{}]: {}", payment.getStatus(), payment);
     }
 }
