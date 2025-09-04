@@ -14,8 +14,3 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-
-app:
-  topics:
-    orders: dev.orders.events.v1
-    payments: dev.payments.events.v1

@@ -1,6 +1,7 @@
 package dev.abykov.pets.kafka.microshop.orders;
 
 import dev.abykov.pets.kafka.microshop.messaging.events.OrderEvent;
+import dev.abykov.pets.kafka.microshop.messaging.exchange.Topics;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -16,7 +17,6 @@ import java.util.UUID;
 public class OrdersController {
 
     private final KafkaTemplate<String, OrderEvent> orderKafkaTemplate;
-    private final OrdersTopics topics;
 
     @PostMapping
     public String createOrder(@RequestBody(required = false) Map<String, Object> payload) {
@@ -26,9 +26,9 @@ public class OrdersController {
 
         OrderEvent event = new OrderEvent(orderId, json);
 
-        orderKafkaTemplate.send(topics.getOrders(), orderId, event);
+        orderKafkaTemplate.send(Topics.ORDERS, orderId, event);
 
-        log.info("Новый заказ создан: {}", event);
+        log.info("New order created: {}", event);
 
         return orderId;
     }
