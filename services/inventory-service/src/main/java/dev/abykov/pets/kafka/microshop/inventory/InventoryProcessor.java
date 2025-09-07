@@ -1,5 +1,6 @@
 package dev.abykov.pets.kafka.microshop.inventory;
 
+import dev.abykov.pets.kafka.microshop.messaging.exchange.Topics;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -17,7 +18,7 @@ public class InventoryProcessor {
         this.kafka = kafka;
     }
 
-    @KafkaListener(topics = "dev.orders.events.v1", groupId = "inventory-service")
+    @KafkaListener(topics = Topics.ORDERS, groupId = "inventory-service")
     public void onOrderCreated(String message) {
         log.info("Inventory check for order: {}", message);
 
@@ -27,7 +28,8 @@ public class InventoryProcessor {
                 ? "{\"status\":\"INVENTORY_RESERVED\",\"order\":" + message + "}"
                 : "{\"status\":\"OUT_OF_STOCK\",\"order\":" + message + "}";
 
-        kafka.send("dev.inventory.events.v1", event);
+        kafka.send(Topics.INVENTORY, event);
+
         log.info("Inventory event published: {}", event);
     }
 }

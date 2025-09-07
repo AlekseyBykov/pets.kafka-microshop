@@ -9,3 +9,14 @@ spring:
       auto-offset-reset: earliest
     properties:
       spring.json.trusted.packages: "*"
+    admin:
+      auto-create: true
+
+management:
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: http://jaeger:4318/v1/traces

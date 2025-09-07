@@ -33,8 +33,11 @@ services:
       dockerfile: services/orders-service/Dockerfile
     depends_on:
       - redpanda
+      - jaeger
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
+      OTEL_SERVICE_NAME: orders-service
     ports:
       - "8081:8081"
 
@@ -44,8 +47,11 @@ services:
       dockerfile: services/payments-service/Dockerfile
     depends_on:
       - redpanda
+      - jaeger
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
+      OTEL_SERVICE_NAME: payments-service
     ports:
       - "8083:8083"
 
@@ -55,8 +61,11 @@ services:
       dockerfile: services/shipping-service/Dockerfile
     depends_on:
       - redpanda
+      - jaeger
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
+      OTEL_SERVICE_NAME: shipping-service
     ports:
       - "8084:8084"
 
@@ -66,8 +75,11 @@ services:
       dockerfile: services/auditor-service/Dockerfile
     depends_on:
       - redpanda
+      - jaeger
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
+      OTEL_SERVICE_NAME: auditor-service
     ports:
       - "8085:8085"
 
@@ -77,8 +89,11 @@ services:
       dockerfile: services/notification-service/Dockerfile
     depends_on:
       - redpanda
+      - jaeger
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
+      OTEL_SERVICE_NAME: notification-service
     ports:
       - "8086:8086"
 
@@ -88,7 +103,17 @@ services:
       dockerfile: services/reporting-service/Dockerfile
     depends_on:
       - redpanda
+      - jaeger
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
+      OTEL_SERVICE_NAME: reporting-service
     ports:
       - "8088:8088"
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.57
+    ports:
+      - "16686:16686" # UI
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP
