@@ -20,5 +20,10 @@
         <module>libs/common-messaging</module>
         <module>services/orders-service</module>
         <module>services/payments-service</module>
+        <module>services/shipping-service</module>
+        <module>services/notification-service</module>
+        <module>services/reporting-service</module>
+        <module>services/inventory-service</module>
+        <module>services/auditor-service</module>
     </modules>
 </project>

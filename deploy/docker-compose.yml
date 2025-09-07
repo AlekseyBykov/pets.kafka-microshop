@@ -48,3 +48,47 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
     ports:
       - "8083:8083"
+
+  shipping-service:
+    build:
+      context: ../
+      dockerfile: services/shipping-service/Dockerfile
+    depends_on:
+      - redpanda
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+    ports:
+      - "8084:8084"
+
+  auditor-service:
+    build:
+      context: ../
+      dockerfile: services/auditor-service/Dockerfile
+    depends_on:
+      - redpanda
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+    ports:
+      - "8085:8085"
+
+  notification-service:
+    build:
+      context: ../
+      dockerfile: services/notification-service/Dockerfile
+    depends_on:
+      - redpanda
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+    ports:
+      - "8086:8086"
+
+  reporting-service:
+    build:
+      context: ../
+      dockerfile: services/reporting-service/Dockerfile
+    depends_on:
+      - redpanda
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+    ports:
+      - "8088:8088"
